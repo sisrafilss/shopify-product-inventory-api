@@ -1,15 +1,22 @@
 import axios from 'axios';
 import config from '../config/index.js';
+import { getAccessToken } from './tokenManager.js';
 
-const { shopDomain, accessToken, apiVersion } = config.shopify;
+const { shopDomain, apiVersion } = config.shopify;
 
 const shopifyClient = axios.create({
   baseURL: `${shopDomain}/admin/api/${apiVersion}/graphql.json`,
   method: 'POST',
   headers: {
-    'Content-Type': 'application/json',
-    'X-Shopify-Access-Token': accessToken
+    'Content-Type': 'application/json'
   }
+});
+
+// Inject the latest access token before every request so that the token
+// refreshed by the cron job is always used — no server restart required.
+shopifyClient.interceptors.request.use((requestConfig) => {
+  requestConfig.headers['X-Shopify-Access-Token'] = getAccessToken();
+  return requestConfig;
 });
 
 export const fetchProductInventory = async (productId) => {
