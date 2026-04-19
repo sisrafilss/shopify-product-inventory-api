@@ -11,6 +11,18 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(cors(config.corsOptions));
 
+app.get('/', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Welcome to Shopify Product Inventory API',
+    version: '1.0.0',
+    endpoints: {
+      health: 'GET /health',
+      api: 'GET /api',
+    }
+  });
+});
+
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', message: 'Server is running' });
 });
