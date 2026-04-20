@@ -65,6 +65,7 @@ export const fetchAndStoreToken = async () => {
 
   _currentToken = newToken;
   console.log('[tokenManager] Access token refreshed successfully.');
+  console.log("New access token", newToken);
 
   return _currentToken;
 };
