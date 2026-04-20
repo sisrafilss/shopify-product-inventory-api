@@ -1,6 +1,6 @@
 import axios from 'axios';
 import config from '../config/index.js';
-import { getAccessToken } from './tokenManager.js';
+import { getValidToken } from './tokenManager.js';
 
 const { shopDomain, apiVersion } = config.shopify;
 
@@ -12,10 +12,12 @@ const shopifyClient = axios.create({
   }
 });
 
-// Inject the latest access token before every request so that the token
-// refreshed by the cron job is always used — no server restart required.
-shopifyClient.interceptors.request.use((requestConfig) => {
-  requestConfig.headers['X-Shopify-Access-Token'] = getAccessToken();
+// Inject a guaranteed-fresh access token before every request.
+// The interceptor is async so it can lazily refresh the token when stale —
+// this is the key fix for serverless environments (Vercel) where node-cron
+// never runs and in-memory state resets on every cold start.
+shopifyClient.interceptors.request.use(async (requestConfig) => {
+  requestConfig.headers['X-Shopify-Access-Token'] = await getValidToken();
   return requestConfig;
 });
 
