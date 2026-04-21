@@ -18,6 +18,8 @@ export default {
     clientId: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET
   },
+  redisUrl: process.env.REDIS_URL,
+  tokenEncryptionKey: process.env.TOKEN_ENCRYPTION_KEY,
   corsOptions: {
     origin: process.env.CORS_ORIGIN || '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
