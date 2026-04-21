@@ -48,6 +48,7 @@ export const fetchProductInventory = async (productId) => {
                         
                       }
                       location {
+                        id
                         name
                       }
                     }
